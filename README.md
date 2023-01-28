@@ -1,2 +1,2 @@
 # NetflixPythonBD
-Atividade final desenvolvida durante a disciplina de banco de dados
+Projeto final da disciplina de banco de dados

@@ -6,8 +6,8 @@ class Netflix:
     def __init__(self):
         conf = {
             "host": "localhost",
-            "user": "root",
-            "password": "ifrn.cn"
+            "user": "gui",
+            "password": "12345"
         }
         # Estabelecendo conexão com o banco de dados
         self.conexao = mysql.connector.connect(**conf)
