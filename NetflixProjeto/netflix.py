@@ -1,7 +1,9 @@
 import mysql.connector
-
+from time import sleep
 
 # Criando classe Netflix
+
+
 class Netflix:
     def __init__(self):
         conf = {
@@ -22,7 +24,7 @@ class Netflix:
 
         # Tabela de planos
         tabela_planos = '''
-        create table planos (
+        create table IF NOT EXISTS planos (
 	    id integer auto_increment,
         nome varchar(50),
         valor numeric(5, 2),
@@ -32,7 +34,7 @@ class Netflix:
         self.cursor.execute(tabela_planos)
         # Tabela de usuários
         tabela_usuarios = '''
-        create table usuarios (
+        create table IF NOT EXISTS usuarios (
         id integer auto_increment,
         login varchar(20) not null,
         senha varchar(10) not null,
@@ -47,7 +49,7 @@ class Netflix:
         self.cursor.execute(tabela_usuarios)
         # Tabela de videos
         tabela_videos = '''
-        create table videos (
+        create table IF NOT EXISTS videos (
         id integer auto_increment,
         nome varchar(255) not null,
         ano integer,
@@ -57,7 +59,7 @@ class Netflix:
         self.cursor.execute(tabela_videos)
         # Tabela de visualizações
         tabela_visualizacoes = '''
-        create table visualizacoes (
+        create table IF NOT EXISTS visualizacoes (
         id_usuario integer not null,
         id_video integer not null,
         foreign key(id_usuario) references usuarios(id),
@@ -67,10 +69,93 @@ class Netflix:
         self.cursor.execute(tabela_visualizacoes)
         # Tabela de categorias
         tabela_categorias = '''
-        create table categorias (
+        create table IF NOT EXISTS categorias (
         id integer auto_increment,
         nome varchar(50),
         primary key(id)
     )
         '''
         self.cursor.execute(tabela_categorias)
+
+    # Metodos:
+
+    def cadastrarPlano(self):
+        sql = 'insert into planos (nome, valor) values (%s, %s)'
+        print('-'*30)
+        nomePlano = input('Informe o nome do plano: ')
+        valorPlano = int(input('Informe o valor do plano: '))
+        try:
+            self.cursor.execute(sql, (nomePlano, valorPlano))
+            self.conexao.commit()
+        except:
+            print('Algo deu errado, tente novamente...')
+            sleep(3)
+        else:
+            print('Plano cadastrado')
+            sleep(3)
+
+    def cadastrarUsuario(self):
+        sql = '''insert into usuarios (login, senha, email, id_plano, data_inicio)
+        VALUES
+        (%s, %s, %s, %s, now())'''
+        print('-'*30)
+        login = input('Informe o login: ')
+        senha = int(input('Informe a senha: '))
+        email = input('Informe o email: ')
+        print('Qual será o plano de assinatura desse usuário?\n'
+              '1 - Básico\n'
+              '2 - Master\n'
+              '3 - Supreme')
+        plano = int(input('> '))
+        if plano == 1:
+            plano = 'Basico'
+        elif plano == 2:
+            plano = 'Master'
+        elif plano == 3:
+            plano = 'Supreme'
+        elif plano < 1 or plano > 3:
+            print('Informe uma opção válida.')
+        sql_busca_plano = 'select id from planos where nome = %s'
+        try:
+            self.cursor.execute(sql_busca_plano, (plano, ))
+            id_plano = self.cursor.fetchall()[0][0]
+            # data_inicio = input('Data de inicio (yyyy-mm-dd):')
+            self.cursor.execute(sql, (login, senha, email, id_plano))
+            self.conexao.commit()
+        except:
+            print('Algo deu errado, tente novamente...')
+            sleep(3)
+        else:
+            print(f'Usuário {login} cadastrado.')
+            sleep(3)
+
+    def cadastrarVideo(self):
+        sql = 'insert into videos (nome, ano, id_categoria) VALUES (%s, %s, %s)'
+        print('-'*30)
+        nome = input('Informe o nome do vídeo: ')
+        ano = int(input('Informe o ano do vídeo: '))
+        id_categoria = int(input('Informe o id da categoria do vídeo: '))
+        try:
+            self.cursor.execute(sql, (nome, ano, id_categoria))
+            self.conexao.commit()
+        except:
+            print('Algo deu errado, tente novamente...')
+            sleep(3)
+        else:
+            print(f'Vídeo cadastrado.')
+            sleep(3)
+
+    def assistirVideo(self):
+        sql = 'insert into visualizacoes(id_usuario, id_video) values (%s, %s)'
+        print('-'*30)
+        id_usuario = int(input('Informe o id do usuário que vai assistir: '))
+        id_video = int(input(f'Id do video que será assistido: '))
+        try:
+            self.cursor.execute(sql, (id_usuario, id_video))
+            self.conexao.commit()
+        except:
+            print('Algo deu errado, tente novamente...')
+            sleep(3)
+        else:
+            print('Video assistido.')
+            sleep(3)

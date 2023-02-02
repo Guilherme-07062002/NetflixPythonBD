@@ -9,5 +9,5 @@
 -- DELETE FROM usuarios WHERE id = 4;
 
 -- Atualizar usuário 
--- UPDATE usuarios SET senha = 5555 WHERE id = 1;
+-- UPDATE usuarios SET login = 5555 WHERE id = 1;
 -- select * from usuarios;
