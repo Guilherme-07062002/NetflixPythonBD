@@ -1,8 +1,6 @@
 import mysql.connector
 from time import sleep
 
-# Criando classe Netflix
-
 
 class Netflix:
     def __init__(self):
@@ -21,7 +19,6 @@ class Netflix:
         self.cursor.execute('USE netflix')
 
         # Criando tabelas
-
         # Tabela de planos
         tabela_planos = '''
         create table IF NOT EXISTS planos (
@@ -91,7 +88,7 @@ class Netflix:
             print('Algo deu errado, tente novamente...')
             sleep(3)
         else:
-            print('Plano cadastrado')
+            print(f'Plano {nomePlano} cadastrado.')
             sleep(3)
 
     def cadastrarUsuario(self):
@@ -102,24 +99,8 @@ class Netflix:
         login = input('Informe o login: ')
         senha = int(input('Informe a senha: '))
         email = input('Informe o email: ')
-        print('Qual será o plano de assinatura desse usuário?\n'
-              '1 - Básico\n'
-              '2 - Master\n'
-              '3 - Supreme')
-        plano = int(input('> '))
-        if plano == 1:
-            plano = 'Basico'
-        elif plano == 2:
-            plano = 'Master'
-        elif plano == 3:
-            plano = 'Supreme'
-        elif plano < 1 or plano > 3:
-            print('Informe uma opção válida.')
-        sql_busca_plano = 'select id from planos where nome = %s'
+        id_plano = int(input('ID do plano do usuário: '))
         try:
-            self.cursor.execute(sql_busca_plano, (plano, ))
-            id_plano = self.cursor.fetchall()[0][0]
-            # data_inicio = input('Data de inicio (yyyy-mm-dd):')
             self.cursor.execute(sql, (login, senha, email, id_plano))
             self.conexao.commit()
         except:
@@ -157,5 +138,5 @@ class Netflix:
             print('Algo deu errado, tente novamente...')
             sleep(3)
         else:
-            print('Video assistido.')
+            print(f'O usuário {id_usuario} assistiu o video {id_video}.')
             sleep(3)
